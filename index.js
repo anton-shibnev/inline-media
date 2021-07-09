@@ -27,7 +27,7 @@ class ValidString {
         const breakpointsValue = this.breakpoints[name];
 
         if (breakpointsValue === 0) {
-          replaceStr += `${property}: ${value}`;
+          replaceStr += `${property}: ${value};`;
         } else {
           replaceStr += `${media}${breakpointsValue}px) { ${property}: ${value} }`;
         }

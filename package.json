@@ -1,6 +1,6 @@
 {
   "name": "inline-media",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "inline media for scss",
   "main": "index.js",
   "scripts": {
