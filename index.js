@@ -1,5 +1,19 @@
 const fs = require('fs');
 
+const BP_NAME = 'BREAKPOINTS';
+
+// const getBreakpoints = (file) => {
+//   const styleString = fs.readFileSync(`${file}.scss`).toString();
+//   const regExpBetweenParentheses = /\((.*)\)/;
+//   const regex = new RegExp(`${BP_NAME}: \((.*)\)`, 'g');
+//   // const strBetween = styleString.match(regExpBetweenParentheses);
+//   // console.log(styleString.match(regex));
+
+//   // console.log(strBetween);
+// };
+
+// getBreakpoints('config');
+
 const BREAKPOINTS = {
   mobile: 320,
   tablet: 768,
@@ -11,6 +25,37 @@ const CONFIG = {
   minMax: 'min',
   breakPoints: BREAKPOINTS,
 };
+
+const foo = () => {
+  let styleString = fs.readFileSync(`style.scss`).toString();
+  const rx = /(\w+[\-])*\w+\s?:\s\(.*\)/g;
+  const media = `@media screen and (min-width: `;
+
+  const result = styleString.replace(rx, (item) => {
+    const rxProperty = /(\w+[\-])*\w+/;
+    const property = item.match(rxProperty)[0];
+
+    const rxValue = /\(([^)]+)\)/;
+    const value = item.match(rxValue)[1];
+    const valueArr = value.split(',');
+    let replaceStr = '';
+
+    valueArr.forEach((arrItem) => {
+      const arr = arrItem.split(':');
+      const name = arr[0].trim();
+      const value = arr[1].trim();
+
+      replaceStr += `${media}${BREAKPOINTS[name]}px) { ${property}: ${value} }`;
+    });
+
+    return replaceStr;
+  });
+
+  return result;
+};
+
+console.log(foo());
+// foo();
 
 class InlineMedia {
   constructor({ styleFile, minMax, breakPoints }) {
@@ -37,28 +82,28 @@ class InlineMedia {
     const list = this.strBetween.split(',');
     const obj = {};
 
-    list.map((item) => {
-      item = item.trim().split(':');
-      const name = item[0];
-      const value = item[1].trim();
+    // list.map((item) => {
+    //   item = item.trim().split(':');
+    //   const name = item[0];
+    //   const value = item[1].trim();
 
-      obj[name] = value;
-    });
+    //   obj[name] = value;
+    // });
 
-    for (const key in obj) {
-      if (Object.hasOwnProperty.call(obj, key)) {
-        const value = obj[key];
-        const styleProperty = this.styleProperty;
+    // for (const key in obj) {
+    //   if (Object.hasOwnProperty.call(obj, key)) {
+    //     const value = obj[key];
+    //     const styleProperty = this.styleProperty;
 
-        this.resultString += `
-          ${this.mediaStr}: ${this.breakPoints[key]}px) { ${styleProperty}: ${value} };
-          `.trim();
-      }
-    }
+    //     this.resultString += `
+    //       ${this.mediaStr}: ${this.breakPoints[key]}px) { ${styleProperty}: ${value} };
+    //       `.trim();
+    //   }
+    // }
 
     return this.resultString;
   }
 }
 
-const result = new InlineMedia(CONFIG).init();
-console.log(result);
+// const result = new InlineMedia(CONFIG).init();
+// console.log(result);
