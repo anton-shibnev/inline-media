@@ -31,7 +31,7 @@ h1 {
 you can install from npm
 
 ```
-  npm i inline-media -D
+npm i inline-media -D
 ```
 
 ### webpack.config.js
