@@ -1,18 +1,39 @@
-const fs = require('fs');
+const loaderUtils = require('loader-utils');
 
-const BP_NAME = 'BREAKPOINTS';
+class ValidString {
+  constructor({ source, minMax, breakpoints }) {
+    this.source = source;
+    this.breakpoints = breakpoints;
+    this.minMax = minMax;
+  }
 
-// const getBreakpoints = (file) => {
-//   const styleString = fs.readFileSync(`${file}.scss`).toString();
-//   const regExpBetweenParentheses = /\((.*)\)/;
-//   const regex = new RegExp(`${BP_NAME}: \((.*)\)`, 'g');
-//   // const strBetween = styleString.match(regExpBetweenParentheses);
-//   // console.log(styleString.match(regex));
+  init() {
+    const rx = /(\w+[\-])*\w+\s?:\s\(.*\)/g;
+    const media = `@media only screen and (${this.minMax}-width: `;
 
-//   // console.log(strBetween);
-// };
+    const result = this.source.replace(rx, (item) => {
+      const rxProperty = /(\w+[\-])*\w+/;
+      const property = item.match(rxProperty)[0];
 
-// getBreakpoints('config');
+      const rxValue = /\(([^)]+)\)/;
+      const value = item.match(rxValue)[1];
+      const valueArr = value.split(',');
+      let replaceStr = '';
+
+      valueArr.forEach((arrItem) => {
+        const arr = arrItem.split(':');
+        const name = arr[0].trim();
+        const value = arr[1].trim();
+
+        replaceStr += `${media}${this.breakpoints[name]}px) { ${property}: ${value} }`;
+      });
+
+      return replaceStr;
+    });
+
+    return result;
+  }
+}
 
 const BREAKPOINTS = {
   mobile: 320,
@@ -20,90 +41,23 @@ const BREAKPOINTS = {
   desktop: 1920,
 };
 
-const CONFIG = {
-  styleFile: 'style',
+const DEFAULT_OPTIONS = {
   minMax: 'min',
-  breakPoints: BREAKPOINTS,
+  breakpoints: BREAKPOINTS,
 };
 
-const foo = () => {
-  let styleString = fs.readFileSync(`style.scss`).toString();
-  const rx = /(\w+[\-])*\w+\s?:\s\(.*\)/g;
-  const media = `@media screen and (min-width: `;
+module.exports = function (source) {
+  const options = loaderUtils.getOptions(this);
+  const minMax = !!options.minMax ? options.minMax : DEFAULT_OPTIONS.minMax;
+  const breakpoints = !!options.breakpoints
+    ? options.breakpoints
+    : DEFAULT_OPTIONS.breakpoints;
 
-  const result = styleString.replace(rx, (item) => {
-    const rxProperty = /(\w+[\-])*\w+/;
-    const property = item.match(rxProperty)[0];
+  const validCode = new ValidString({
+    source,
+    minMax: minMax,
+    breakpoints: breakpoints,
+  }).init();
 
-    const rxValue = /\(([^)]+)\)/;
-    const value = item.match(rxValue)[1];
-    const valueArr = value.split(',');
-    let replaceStr = '';
-
-    valueArr.forEach((arrItem) => {
-      const arr = arrItem.split(':');
-      const name = arr[0].trim();
-      const value = arr[1].trim();
-
-      replaceStr += `${media}${BREAKPOINTS[name]}px) { ${property}: ${value} }`;
-    });
-
-    return replaceStr;
-  });
-
-  return result;
+  return validCode;
 };
-
-console.log(foo());
-// foo();
-
-class InlineMedia {
-  constructor({ styleFile, minMax, breakPoints }) {
-    this.minMax = minMax;
-    this.breakPoints = breakPoints;
-
-    this.styleFile = styleFile;
-    this.styleString = fs.readFileSync(`${this.styleFile}.scss`).toString();
-
-    this.mediaStr = `@media screen and (${this.minMax}-width`;
-
-    this.regExpBefore = /\w+(?=: \()/;
-    this.regExpBetweenParentheses = /\((.*)\)/;
-
-    this.strBetween = this.styleString
-      .match(this.regExpBetweenParentheses)
-      .pop();
-    this.styleProperty = this.styleString.match(this.regExpBefore).pop();
-
-    this.resultString = '';
-  }
-
-  init() {
-    const list = this.strBetween.split(',');
-    const obj = {};
-
-    // list.map((item) => {
-    //   item = item.trim().split(':');
-    //   const name = item[0];
-    //   const value = item[1].trim();
-
-    //   obj[name] = value;
-    // });
-
-    // for (const key in obj) {
-    //   if (Object.hasOwnProperty.call(obj, key)) {
-    //     const value = obj[key];
-    //     const styleProperty = this.styleProperty;
-
-    //     this.resultString += `
-    //       ${this.mediaStr}: ${this.breakPoints[key]}px) { ${styleProperty}: ${value} };
-    //       `.trim();
-    //   }
-    // }
-
-    return this.resultString;
-  }
-}
-
-// const result = new InlineMedia(CONFIG).init();
-// console.log(result);

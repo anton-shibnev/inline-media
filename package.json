@@ -1,0 +1,25 @@
+{
+  "name": "inline-media",
+  "version": "1.0.0",
+  "description": "inline media for scss",
+  "main": "inline-media.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shibnev/inline-media.git"
+  },
+  "keywords": [
+    "scss"
+  ],
+  "author": "Anton Shibnev",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shibnev/inline-media/issues"
+  },
+  "homepage": "https://github.com/shibnev/inline-media#readme",
+  "dependencies": {
+    "loader-utils": "^2.0.0"
+  }
+}
