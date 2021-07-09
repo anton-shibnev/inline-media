@@ -24,8 +24,13 @@ class ValidString {
         const arr = arrItem.split(':');
         const name = arr[0].trim();
         const value = arr[1].trim();
+        const breakpointsValue = this.breakpoints[name];
 
-        replaceStr += `${media}${this.breakpoints[name]}px) { ${property}: ${value} }`;
+        if (breakpointsValue === 0) {
+          replaceStr += `${property}: ${value}`;
+        } else {
+          replaceStr += `${media}${breakpointsValue}px) { ${property}: ${value} }`;
+        }
       });
 
       return replaceStr;

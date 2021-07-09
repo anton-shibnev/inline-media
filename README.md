@@ -16,9 +16,7 @@ compile to
 
 ```
 h1 {
-  @media only screen and (min-width: 375px) {
-    color: red;
-  }
+  color: red;
 
   @media only screen and (min-width: 768px) {
     color: black;
