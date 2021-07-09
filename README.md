@@ -29,7 +29,7 @@ h1 {
 
 ### installation
 
-- you can install from npm
+you can install from npm
 
 ```
   npm i inline-media -D
