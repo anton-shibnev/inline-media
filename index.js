@@ -8,17 +8,18 @@ class ValidString {
   }
 
   init() {
-    const rx = /\/(\w+[\-])*\w+\/\s?{([^}]*)}/g;
+    const rx = /(?<!\$)((\w+[\-])*\w+\:\s?\((.*))(?=\;)/g;
     const media = `@media only screen and (${this.minMax}-width: `;
 
     const result = this.source.replace(rx, (item) => {
-      const rxProperty = /(?<=\/).*?(?=\/)/;
+      const rxProperty = /(?<!\$)((\w+[\-])*\w+)(?=()\:\s?\()/;
       const property = item.match(rxProperty)[0];
 
-      const rxValue = /(?<=\{)([^}]*)(?=\})/;
+      const rxValue = /(?<=\()([^}]*)(?=\))/;
       const value = item.match(rxValue)[1];
 
-      const rxSplitArr = /(?<=\$)(.*)(?=\;)/g;
+      const rxSplitArr =
+        /(?<=(\$))(\w+\:\s)(.*)(?=(\,\s\$))|(?<=(\$))(\w+\:\s)(.*)/g;
       const valueArr = value.match(rxSplitArr);
       let replaceStr = '';
 
@@ -43,7 +44,7 @@ class ValidString {
 }
 
 const BREAKPOINTS = {
-  mobile: 320,
+  mobile: 0,
   tablet: 768,
   desktop: 1920,
 };
