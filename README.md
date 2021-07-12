@@ -23,16 +23,16 @@ compile to
   font-size: 20px;
 }
 
-@media only screen and (min-width: 1260px) {
-  .test {
-    transform: scale(1.1);
-  }
-}
-
 @media only screen and (min-width: 768px) {
   .test {
     transition: none;
     font-size: 40px;
+  }
+}
+
+@media only screen and (min-width: 1260px) {
+  .test {
+    transform: scale(1.1);
   }
 }
 ```
