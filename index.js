@@ -8,16 +8,18 @@ class ValidString {
   }
 
   init() {
-    const rx = /(\w+[\-])*\w+\s?:\s\(.*\)/g;
+    const rx = /\/(\w+[\-])*\w+\/\s?{([^}]*)}/g;
     const media = `@media only screen and (${this.minMax}-width: `;
 
     const result = this.source.replace(rx, (item) => {
-      const rxProperty = /(\w+[\-])*\w+/;
+      const rxProperty = /(?<=\/).*?(?=\/)/;
       const property = item.match(rxProperty)[0];
 
-      const rxValue = /\(([^)]+)\)/;
+      const rxValue = /(?<=\{)([^}]*)(?=\})/;
       const value = item.match(rxValue)[1];
-      const valueArr = value.split(',');
+
+      const rxSplitArr = /(?<=\$)(.*)(?=\;)/g;
+      const valueArr = value.match(rxSplitArr);
       let replaceStr = '';
 
       valueArr.forEach((arrItem) => {
@@ -29,7 +31,7 @@ class ValidString {
         if (breakpointsValue === 0) {
           replaceStr += `${property}: ${value};`;
         } else {
-          replaceStr += `${media}${breakpointsValue}px) { ${property}: ${value} }`;
+          replaceStr += `${media}${breakpointsValue}px){${property}:${value}}`;
         }
       });
 
