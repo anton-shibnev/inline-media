@@ -43,7 +43,7 @@ class ValidString {
 }
 
 const BREAKPOINTS = {
-  mobile: 320,
+  mobile: 0,
   tablet: 768,
   desktop: 1920,
 };
