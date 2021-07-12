@@ -8,15 +8,9 @@ loader for webpack
 
 ```
 .test {
-  /transition/ {
-    $mobile: color 2s, transform 1s;
-    $tablet: none;
-  }
-
-  /font-size/ {
-    $mobile: 20px;
-    $tablet: 40px;
-  }
+  transform: ($mobile: scale(1) translate(10px), $desktop: scale(1.1));
+  transition: ($mobile: color 2s, transform 1s, $tablet: none);
+  font-size: ($mobile: 20px, $tablet: 40px);
 }
 ```
 
@@ -24,8 +18,15 @@ compile to
 
 ```
 .test {
+  transform: scale(1) translate(10px);
   transition: color 2s, transform 1s;
   font-size: 20px;
+}
+
+@media only screen and (min-width: 1260px) {
+  .test {
+    transform: scale(1.1);
+  }
 }
 
 @media only screen and (min-width: 768px) {
