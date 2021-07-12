@@ -7,19 +7,31 @@ loader for webpack
 ### simple example
 
 ```
-h1 {
-  color: (mobile: red, tablet: black);
+.test {
+  /transition/ {
+    $mobile: color 2s, transform 1s;
+    $tablet: none;
+  }
+
+  /font-size/ {
+    $mobile: 20px;
+    $tablet: 40px;
+  }
 }
 ```
 
 compile to
 
 ```
-h1 {
-  color: red;
+.test {
+  transition: color 2s, transform 1s;
+  font-size: 20px;
+}
 
-  @media only screen and (min-width: 768px) {
-    color: black;
+@media only screen and (min-width: 768px) {
+  .test {
+    transition: none;
+    font-size: 40px;
   }
 }
 ```
